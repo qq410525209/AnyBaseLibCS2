@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AnyBaseLib.Bases;
 
 namespace AnyBaseLib
 {
     public static class CAnyBase
     {
-        public static IAnyBase Base(string name)
+        public static IAnyBase Base(string type)
         {
-            switch(name.ToLower())
+            return type.ToLower() switch
             {
-                case "sqlite": return new Bases.SQLiteDriver();
-                case "mysql": return new Bases.MySQLDriver();
-                case "postgre": return new Bases.PostgreDriver();
-                default: throw new Exception("Unknown DB type");
-            }
+                "mysql" => new Bases.MySQLDriver(),
+                "sqlite" => new Bases.SQLiteDriver(),
+                "postgre" => new Bases.PostgreDriver(),
+                _ => throw new Exception($"Unknown database type: {type}"),
+            };
         }
 
         public static int Version()

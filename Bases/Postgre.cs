@@ -19,7 +19,7 @@ namespace AnyBaseLib.Bases
         private DbTransaction transaction;
         private string builder;
 
-        public void Set(CommitMode commit_mode, string db_name, string db_host, string db_user = "", string db_pass = "")
+        public void Set(CommitMode commit_mode, string db_name, string db_host, string db_user = "", string db_pass = "", string ssl_mode = "")
         {
             this.commit_mode = commit_mode;
 
@@ -29,13 +29,39 @@ namespace AnyBaseLib.Bases
             if (db_host_arr.Length > 1)
                 db_port = int.Parse(db_host_arr[1]);
 
+            SslMode npgSslMode = SslMode.Prefer;
+            if (!string.IsNullOrEmpty(ssl_mode))
+            {
+                // SSLmode
+                switch (ssl_mode.ToLower())
+                {
+                    case "disable":
+                        npgSslMode = SslMode.Disable;
+                        break;
+                    case "prefer":
+                        npgSslMode = SslMode.Prefer;
+                        break;
+                    case "require":
+                        npgSslMode = SslMode.Require;
+                        break;
+                    case "verifyfull":
+                    case "verify-full":
+                        npgSslMode = SslMode.VerifyFull;
+                        break;
+                    case "verifyca":
+                    case "verify-ca":
+                        npgSslMode = SslMode.VerifyCA;
+                        break;
+                }
+            }
+
             builder = new NpgsqlConnectionStringBuilder
             {
                 Host = db_server,
                 Database = db_name,
                 Username = db_user,
                 Password = db_pass,
-                SslMode = SslMode.Prefer,
+                SslMode = npgSslMode,
                 Port = db_port
                 
             }.ConnectionString;

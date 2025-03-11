@@ -19,7 +19,7 @@ namespace AnyBaseLib.Bases
         private string builder;
 
 
-        public void Set(CommitMode commit_mode, string db_name, string db_host, string db_user = "", string db_pass = "")
+        public void Set(CommitMode commit_mode, string db_name, string db_host = "", string db_user = "", string db_pass = "", string ssl_mode = "")
         {
             this.commit_mode = commit_mode;
 
@@ -29,6 +29,12 @@ namespace AnyBaseLib.Bases
             if (db_host_arr.Length > 1)
                 db_port = uint.Parse(db_host_arr[1]);
 
+            // SSL mode
+            string ssl_config = "";
+            if (!string.IsNullOrEmpty(ssl_mode))
+            {
+                ssl_config = $";SslMode={ssl_mode}";
+            }
 
             builder = new MySqlConnectionStringBuilder
             {
@@ -37,9 +43,9 @@ namespace AnyBaseLib.Bases
                 UserID = db_user,
                 Password = db_pass,
                 SslMode = MySqlSslMode.None,
-                Port = db_port
-                
-            }.ConnectionString;
+                Port = db_port,
+                AllowUserVariables = true
+            }.ConnectionString + ssl_config;
 
             dbConn = GetNewConn(false);
 

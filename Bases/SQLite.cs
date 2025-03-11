@@ -22,7 +22,7 @@ namespace AnyBaseLib.Bases
         private bool trans_started = false;
         private DbTransaction transaction;
 
-        public void Set(CommitMode commit_mode, string db_name, string db_host = "", string db_user = "", string db_pass = "")
+        public void Set(CommitMode commit_mode, string db_name, string db_host = "", string db_user = "", string db_pass = "", string ssl_mode = "")
         {
             this.commit_mode = commit_mode;
             dbConn = new SqliteConnection($"Data Source={db_name}.sqlite;");
